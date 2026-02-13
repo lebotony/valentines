@@ -1,0 +1,1 @@
+export { SpinningCupids } from './SpinningCupids';

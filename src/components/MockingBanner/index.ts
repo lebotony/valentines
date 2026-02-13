@@ -1,0 +1,1 @@
+export { MockingBanner } from './MockingBanner';

@@ -1,0 +1,1 @@
+export { LaughingCharacter } from './LaughingCharacter';
