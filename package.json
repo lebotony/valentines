@@ -4,6 +4,7 @@
   "private": true,
   "description": "Valentine's Day landing page for capturing leads",
   "dependencies": {
+    "@vercel/analytics": "^1.6.1",
     "firebase": "^10.7.1",
     "framer-motion": "^11.0.3",
     "react": "^19.2.3",
