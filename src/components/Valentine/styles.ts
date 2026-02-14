@@ -537,3 +537,60 @@ export const PopupButton = styled(motion.button)`
     font-size: ${({ theme }) => theme.fontSize.sm};
   }
 `;
+
+// Toggle Switch Components
+export const ToggleContainer = styled(motion.div)`
+  display: flex;
+  background: ${({ theme }) => theme.colors.dark};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  padding: 4px;
+  margin-bottom: 2rem;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: ${({ theme }) => theme.shadows.md};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    margin-bottom: 1.5rem;
+  }
+`;
+
+export const ToggleOption = styled(motion.button)<{ $active?: boolean }>`
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  color: ${({ theme, $active }) =>
+    $active ? theme.colors.white : theme.colors.textSecondary};
+  cursor: pointer;
+  z-index: 1;
+  transition: color ${({ theme }) => theme.transitions.normal};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  position: relative;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.white};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: 10px 16px;
+    font-size: ${({ theme }) => theme.fontSize.sm};
+  }
+`;
+
+export const ToggleSlider = styled(motion.div)`
+  position: absolute;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: linear-gradient(
+    135deg,
+    ${({ theme }) => theme.colors.primary},
+    ${({ theme }) => theme.colors.secondary}
+  );
+  border-radius: ${({ theme }) => theme.borderRadius.full};
+  top: 4px;
+  left: 4px;
+  box-shadow: ${({ theme }) => theme.shadows.glow};
+`;

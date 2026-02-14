@@ -1,7 +1,4 @@
-import {
-  BannerContainer,
-  BannerText
-} from "./styles";
+import { BannerContainer, BannerText } from "./styles";
 
 /**
  * MockingBanner Component
@@ -21,7 +18,8 @@ export const MockingBanner = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6, duration: 0.6 }}
       >
-        Love surprises? 💌 Fill in the form to get your Valentine's gift — and join the waitlist for early access to our upcoming dating app.
+        Love surprises? 💌 Fill in the form to meet serious, vision-driven
+        singles with real paychecks — and get early access to our dating app.
       </BannerText>
     </BannerContainer>
   );

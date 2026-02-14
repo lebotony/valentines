@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // xpoz-landing collection
+    match /xpoz-landing/{document} {
+      // Allow anyone to create new waitlist entries
+      allow create: if request.resource.data.keys().hasAll(['timestamp'])
+                    && (request.resource.data.email is string || request.resource.data.model is string)
+                    && request.resource.data.size() <= 4;
+
+      // Allow public read access
+      allow read: if true;
+
+      // No updates or deletes from public
+      allow update, delete: if false;
+    }
+
+    // valentines collection
+    match /valentines/{document} {
+      // Allow anyone to create new valentine entries
+      // Email is optional
+      allow create: if request.resource.data.keys().hasAll(['name', 'phone', 'countryCode'])
+                    && request.resource.data.name is string
+                    && request.resource.data.phone is string
+                    && request.resource.data.countryCode is string
+                    && (!request.resource.data.keys().hasAny(['email']) || request.resource.data.email is string)
+                    && request.resource.data.size() >= 3
+                    && request.resource.data.size() <= 4;
+
+      // No public read access
+      allow read: if false;
+
+      // No updates or deletes from public
+      allow update, delete: if false;
+    }
+
+    // valentine_chart collection - aggregated country data
+    match /valentine_chart/{document} {
+      // Allow public read access to chart data
+      allow read: if true;
+
+      // Allow creating new country entries
+      allow create: if request.resource.data.keys().hasAll(['code', 'name', 'count'])
+                    && request.resource.data.code is string
+                    && request.resource.data.name is string
+                    && request.resource.data.count is number
+                    && request.resource.data.count == 1;
+
+      // Allow updating existing entries (incrementing count)
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
+                    && request.resource.data.count == resource.data.count + 1;
+
+      // No deletes from public
+      allow delete: if false;
+    }
+
+    // cached-data collection for aggregated/computed data
+    match /cached-data/{document} {
+      // Allow public read access to cached data
+      allow read: if true;
+
+      // Allow public write access to update cache
+      allow write: if true;
+    }
+  }
+}
