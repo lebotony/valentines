@@ -1,16 +1,12 @@
 import {
   BannerContainer,
-  ComicText,
-  SubText,
-  TextContainer,
-  TopText,
+  BannerText
 } from "./styles";
 
 /**
  * MockingBanner Component
  *
- * Displays modern, encouraging banner
- * Features gradient text and elegant animations
+ * Displays banner with LaughingMan background image
  */
 
 export const MockingBanner = () => {
@@ -20,31 +16,13 @@ export const MockingBanner = () => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
     >
-      <TextContainer>
-        <TopText
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
-        >
-          Forget about the Epstein Files 📁, did you get a valentines gift 🎁?
-        </TopText>
-
-        <ComicText
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6, ease: "easeOut" }}
-        >
-          ✨ Don't Worry, There's Still Hope! ✨
-        </ComicText>
-
-        <SubText
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.6, ease: "easeOut" }}
-        >
-          Fill in the form below to receive your special Valentine's surprise 💝
-        </SubText>
-      </TextContainer>
+      <BannerText
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.6, duration: 0.6 }}
+      >
+        Love surprises? 💌 Fill in the form to get your Valentine's gift — and join the waitlist for early access to our upcoming dating app.
+      </BannerText>
     </BannerContainer>
   );
 };

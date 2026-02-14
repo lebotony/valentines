@@ -17,7 +17,7 @@ export const HeroSection = styled.section`
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0 ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.xxxl};
+  padding: ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.xxxl};
   background:
     linear-gradient(
       to bottom,
@@ -25,15 +25,17 @@ export const HeroSection = styled.section`
       rgba(0, 0, 0, 0.75)
     ),
     url('/valentine-cards-bg.jpg') center center / cover no-repeat;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: 100%;
   z-index: 2;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    padding: 0 ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+    padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: 0 ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.lg};
     min-height: 100dvh;
   }
 `;
@@ -68,35 +70,41 @@ export const BackgroundBlur = styled.div`
 // Main content container
 export const Container = styled.div`
   position: relative;
-  z-index: 2;
+  z-index: 300;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.xl};
+  gap: ${({ theme }) => theme.spacing.lg};
   max-width: 800px;
   width: 100%;
   padding: 0 ${({ theme }) => theme.spacing.xl};
   overflow: visible;
+  margin-top: 20px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
-    gap: ${({ theme }) => theme.spacing.lg};
+    gap: ${({ theme }) => theme.spacing.md};
     padding: 0 ${({ theme }) => theme.spacing.lg};
+    margin-top: -40px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    gap: ${({ theme }) => theme.spacing.md};
+    gap: ${({ theme }) => theme.spacing.sm};
     padding: 0 ${({ theme }) => theme.spacing.md};
+    margin-top: -30px;
   }
 `;
 
 // Hero content section
 export const HeroContent = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.lg};
   text-align: center;
   overflow: visible;
+  width: 100%;
+  z-index: 9999;
 `;
 
 // Bounce animation for gift box
@@ -115,23 +123,32 @@ const floatAround = keyframes`
     transform: translate(0, 0) rotate(0deg) scale(1);
   }
   25% {
-    transform: translate(30px, -30px) rotate(10deg) scale(1.1);
+    transform: translate(20px, -20px) rotate(10deg) scale(1.1);
   }
   50% {
-    transform: translate(0, -60px) rotate(-10deg) scale(1);
+    transform: translate(0, -40px) rotate(-10deg) scale(1);
   }
   75% {
-    transform: translate(-30px, -30px) rotate(10deg) scale(1.1);
+    transform: translate(-20px, -20px) rotate(10deg) scale(1.1);
   }
 `;
 
 // Orbit animation
 const orbit = keyframes`
   0% {
-    transform: rotate(0deg) translateX(150px) rotate(0deg);
+    transform: rotate(0deg) translateX(120px) rotate(0deg);
   }
   100% {
-    transform: rotate(360deg) translateX(150px) rotate(-360deg);
+    transform: rotate(360deg) translateX(120px) rotate(-360deg);
+  }
+`;
+
+const orbitMobile = keyframes`
+  0% {
+    transform: rotate(0deg) translateX(70px) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(70px) rotate(-360deg);
   }
 `;
 
@@ -141,7 +158,14 @@ export const GiftBoxContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible;
+  width: fit-content;
+  margin: 0 auto;
+  padding: 50px;
+  z-index: 9998;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: 40px;
+  }
 `;
 
 // Gift box emoji (decorative)
@@ -175,10 +199,10 @@ export const FloatingDecorativeEmoji = styled(motion.div)<FloatingEmojiProps>`
   animation-delay: ${(props) => props.$delay || 0}s;
   filter: drop-shadow(0 5px 15px rgba(236, 72, 153, 0.3));
   user-select: none;
-  z-index: 1;
+  z-index: 201;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    font-size: 30px;
+    font-size: 24px;
   }
 `;
 
@@ -194,13 +218,12 @@ export const OrbitingSparkle = styled.div<OrbitingSparkleProps>`
   animation-delay: ${(props) => props.$delay || 0}s;
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
   user-select: none;
-  z-index: 10;
+  z-index: 9999;
   pointer-events: none;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     font-size: 18px;
-    animation: ${orbit} 8s linear infinite;
-    transform: rotate(0deg) translateX(100px) rotate(0deg);
+    animation: ${orbitMobile} 8s linear infinite;
   }
 `;
 
@@ -255,6 +278,7 @@ export const FormContainer = styled(motion.div)`
   border-radius: ${({ theme }) => theme.borderRadius.xxl};
   padding: ${({ theme }) => theme.spacing.xxxl};
   box-shadow: ${({ theme }) => theme.shadows.xl};
+  position: relative;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     max-width: 100%;
@@ -310,6 +334,7 @@ export const Input = styled.input<{ $hasError?: boolean }>`
   font-size: ${({ theme }) => theme.fontSize.md};
   transition: all ${({ theme }) => theme.transitions.normal};
   width: 100%;
+  scroll-margin: 100px;
 
   &:focus {
     outline: none;
@@ -325,7 +350,8 @@ export const Input = styled.input<{ $hasError?: boolean }>`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     padding: ${({ theme }) => theme.spacing.sm};
-    font-size: ${({ theme }) => theme.fontSize.sm};
+    font-size: 16px; /* Prevents zoom on iOS */
+    scroll-margin: 120px;
   }
 `;
 
@@ -368,6 +394,10 @@ export const SubmitButton = styled(motion.button)<{ $loading?: boolean }>`
   box-shadow: ${({ theme }) => theme.shadows.glow};
   opacity: ${({ $loading }) => ($loading ? 0.7 : 1)};
   margin-top: ${({ theme }) => theme.spacing.md};
+  width: 100%;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  scroll-margin-bottom: 100px;
 
   &:hover {
     box-shadow: ${({ theme }) => theme.shadows.neon};
@@ -380,7 +410,9 @@ export const SubmitButton = styled(motion.button)<{ $loading?: boolean }>`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
-    font-size: ${({ theme }) => theme.fontSize.sm};
+    font-size: 16px;
+    margin-bottom: ${({ theme }) => theme.spacing.lg};
+    scroll-margin-bottom: 150px;
   }
 `;
 

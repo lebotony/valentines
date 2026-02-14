@@ -11,6 +11,9 @@ export const GlobalStyles = createGlobalStyle`
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
   }
 
   body {
@@ -22,6 +25,14 @@ export const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  #root {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
   }
 
   h1, h2, h3, h4, h5, h6 {
