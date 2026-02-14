@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import {
@@ -6,7 +6,6 @@ import {
   validatePhone,
   validateEmail,
 } from "../../utils/valentineMessages";
-import { Hearts3D } from "../Hearts3D";
 import { HeartParticle } from "../Hearts3D/styles";
 import { MockingBanner } from "../MockingBanner";
 import {
@@ -14,10 +13,6 @@ import {
   BackgroundBlur,
   Container,
   HeroContent,
-  GiftBoxContainer,
-  GiftBoxEmoji,
-  FloatingDecorativeEmoji,
-  OrbitingSparkle,
   FormContainer,
   Form,
   InputGroup,
@@ -67,6 +62,20 @@ export const ValentinePage = () => {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showParticles, setShowParticles] = useState(false);
+
+  // Prevent auto-scroll on mobile
+  useEffect(() => {
+    // Prevent scroll restoration that causes jump-back behavior
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+
+    return () => {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'auto';
+      }
+    };
+  }, []);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
@@ -150,8 +159,6 @@ export const ValentinePage = () => {
 
   return (
     <>
-      <Hearts3D enableParallax />
-
       <HeroSection>
         <BackgroundBlur />
 
@@ -160,67 +167,6 @@ export const ValentinePage = () => {
 
         <Container>
           <HeroContent>
-            <GiftBoxContainer>
-              {/* Orbiting sparkles */}
-              <OrbitingSparkle $delay={0}>✨</OrbitingSparkle>
-              <OrbitingSparkle $delay={2}>⭐</OrbitingSparkle>
-              <OrbitingSparkle $delay={4}>💫</OrbitingSparkle>
-              <OrbitingSparkle $delay={6}>🌟</OrbitingSparkle>
-
-              {/* Floating decorative emojis */}
-              <FloatingDecorativeEmoji
-                $delay={0}
-                $duration={4}
-                style={{ top: "-60px", left: "-80px" }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
-              >
-                💖
-              </FloatingDecorativeEmoji>
-
-              <FloatingDecorativeEmoji
-                $delay={1}
-                $duration={5}
-                style={{ top: "-60px", right: "-80px" }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
-              >
-                💕
-              </FloatingDecorativeEmoji>
-
-              <FloatingDecorativeEmoji
-                $delay={0.5}
-                $duration={4.5}
-                style={{ bottom: "-40px", left: "-60px" }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.2, duration: 0.5 }}
-              >
-                💗
-              </FloatingDecorativeEmoji>
-
-              <FloatingDecorativeEmoji
-                $delay={1.5}
-                $duration={5.5}
-                style={{ bottom: "-40px", right: "-60px" }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.4, duration: 0.5 }}
-              >
-                💝
-              </FloatingDecorativeEmoji>
-
-              {/* Main gift box */}
-              <GiftBoxEmoji
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              >
-                💝
-              </GiftBoxEmoji>
-            </GiftBoxContainer>
           </HeroContent>
 
           <FormContainer
