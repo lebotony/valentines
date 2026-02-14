@@ -1,0 +1,1 @@
+export { UniversityChart } from "./UniversityChart";

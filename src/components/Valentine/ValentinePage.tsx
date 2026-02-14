@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { collection, addDoc, doc, updateDoc, increment, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  increment,
+  getDoc,
+  setDoc
+} from "firebase/firestore";
 import { db } from "../../config/firebase";
 import {
   validateName,
@@ -7,9 +15,15 @@ import {
   validateEmail
 } from "../../utils/valentineMessages";
 import { getCountryName } from "../../utils/countryCodeMapping";
+import {
+  getAllUniversities,
+  getUniversityFullName,
+  getUniversityShortName
+} from "../../utils/universityMapping";
 import { HeartParticle } from "../Hearts3D/styles";
 import { MockingBanner } from "../MockingBanner";
 import { ValentineChart } from "../ValentineChart";
+import { UniversityChart } from "../UniversityChart";
 import {
   HeroSection,
   BackgroundBlur,
@@ -21,6 +35,9 @@ import {
   InputWrapper,
   Label,
   Input,
+  InputButton,
+  InputButtonText,
+  InputButtonIcon,
   ErrorMessage,
   GeneralError,
   SubmitButton,
@@ -31,6 +48,14 @@ import {
   PopupTitle,
   PopupMessage,
   PopupButton,
+  PickerOverlay,
+  PickerModal,
+  PickerHeader,
+  PickerTitle,
+  PickerCloseButton,
+  PickerList,
+  PickerOption,
+  PickerCheckmark,
   ToggleContainer,
   ToggleOption,
   ToggleSlider
@@ -55,6 +80,7 @@ export const ValentinePage = () => {
   const [countryCode, setCountryCode] = useState("+1");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [university, setUniversity] = useState("");
 
   // UI state
   const [loading, setLoading] = useState(false);
@@ -68,6 +94,10 @@ export const ValentinePage = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showParticles, setShowParticles] = useState(false);
   const [activeView, setActiveView] = useState<"form" | "chart">("form");
+  const [chartType, setChartType] = useState<"countries" | "universities">(
+    "countries"
+  );
+  const [showUniversityPicker, setShowUniversityPicker] = useState(false);
 
   // Prevent auto-scroll on mobile
   useEffect(() => {
@@ -100,7 +130,10 @@ export const ValentinePage = () => {
       phone: !validatePhone(fullPhone)
         ? "Please enter a valid phone number (10-15 digits)"
         : "",
-      email: email.trim() && !validateEmail(email) ? "Please enter a valid email address" : ""
+      email:
+        email.trim() && !validateEmail(email)
+          ? "Please enter a valid email address"
+          : ""
     };
 
     // Check if there are any errors
@@ -125,6 +158,11 @@ export const ValentinePage = () => {
     // Only include email if provided
     if (email.trim()) {
       submissionData.email = email.trim().toLowerCase();
+    }
+
+    // Only include university if selected
+    if (university) {
+      submissionData.university = university;
     }
 
     addDoc(collection(db, "valentines"), submissionData)
@@ -157,11 +195,41 @@ export const ValentinePage = () => {
           console.error("Failed to update chart:", chartError);
         }
 
+        // Increment university count in university_cache collection
+        if (university) {
+          try {
+            const universityDocRef = doc(db, "university_cache", university);
+            const universityDoc = await getDoc(universityDocRef);
+
+            if (universityDoc.exists()) {
+              // Document exists, increment count
+              await updateDoc(universityDocRef, {
+                count: increment(1)
+              });
+            } else {
+              // Document doesn't exist, create it with count 1
+              await setDoc(universityDocRef, {
+                key: university,
+                shortName: getUniversityShortName(university),
+                fullName: getUniversityFullName(university),
+                count: 1
+              });
+            }
+          } catch (universityError) {
+            // Log error but don't block user experience
+            console.error(
+              "Failed to update university chart:",
+              universityError
+            );
+          }
+        }
+
         // Reset form
         setName("");
         setCountryCode("+1");
         setPhone("");
         setEmail("");
+        setUniversity("");
 
         // Hide particles after animation
         setTimeout(() => setShowParticles(false), 1500);
@@ -316,6 +384,24 @@ export const ValentinePage = () => {
                   )}
                 </InputWrapper>
 
+                <InputWrapper>
+                  <Label htmlFor="university">
+                    University (optional) for SA only
+                  </Label>
+                  <InputButton
+                    type="button"
+                    onClick={() => setShowUniversityPicker(true)}
+                    disabled={loading}
+                  >
+                    <InputButtonText $placeholder={!university}>
+                      {university
+                        ? getUniversityFullName(university)
+                        : "Select your university"}
+                    </InputButtonText>
+                    <InputButtonIcon>▼</InputButtonIcon>
+                  </InputButton>
+                </InputWrapper>
+
                 <SubmitButton
                   type="submit"
                   $loading={loading}
@@ -334,7 +420,34 @@ export const ValentinePage = () => {
                 </SubmitButton>
               </Form>
             ) : (
-              <ValentineChart />
+              <>
+                {/* Chart Type Toggle - Only visible in chart view */}
+                <ToggleContainer style={{ marginTop: "1rem" }}>
+                  <ToggleSlider
+                    animate={{ x: chartType === "countries" ? 0 : "100%" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                  <ToggleOption
+                    onClick={() => setChartType("countries")}
+                    $active={chartType === "countries"}
+                  >
+                    Countries
+                  </ToggleOption>
+                  <ToggleOption
+                    onClick={() => setChartType("universities")}
+                    $active={chartType === "universities"}
+                  >
+                    Universities
+                  </ToggleOption>
+                </ToggleContainer>
+
+                {/* Conditional Chart Rendering */}
+                {chartType === "countries" ? (
+                  <ValentineChart />
+                ) : (
+                  <UniversityChart />
+                )}
+              </>
             )}
           </FormContainer>
         </Container>
@@ -381,6 +494,50 @@ export const ValentinePage = () => {
             {particle.emoji}
           </HeartParticle>
         ))}
+
+      {/* University Picker Modal */}
+      {showUniversityPicker && (
+        <PickerOverlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setShowUniversityPicker(false)}
+        >
+          <PickerModal
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <PickerHeader>
+              <PickerTitle>Select your university (optional)</PickerTitle>
+              <PickerCloseButton onClick={() => setShowUniversityPicker(false)}>
+                ✕
+              </PickerCloseButton>
+            </PickerHeader>
+            <PickerList>
+              {getAllUniversities().map((uni) => (
+                <PickerOption
+                  key={uni.key}
+                  $selected={university === uni.key}
+                  onClick={() => {
+                    setUniversity(uni.key);
+                    setShowUniversityPicker(false);
+                  }}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                >
+                  {university === uni.key && (
+                    <PickerCheckmark>✓</PickerCheckmark>
+                  )}
+                  <span>{uni.full}</span>
+                </PickerOption>
+              ))}
+            </PickerList>
+          </PickerModal>
+        </PickerOverlay>
+      )}
     </>
   );
 };

@@ -349,7 +349,54 @@ export const Input = styled.input<{ $hasError?: boolean }>`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: calc(${({ theme }) => theme.spacing.sm} + 4px);
+    font-size: 16px; /* Prevents zoom on iOS */
+    scroll-margin: 120px;
+  }
+`;
+
+// Select dropdown
+export const Select = styled.select<{ $hasError?: boolean }>`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  padding: ${({ theme }) => theme.spacing.md};
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid
+    ${({ $hasError, theme }) =>
+      $hasError ? theme.colors.primary : theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  transition: all ${({ theme }) => theme.transitions.normal};
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23fff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right ${({ theme }) => theme.spacing.md} center;
+  padding-right: ${({ theme }) => theme.spacing.xl};
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(255, 68, 88, 0.1),
+      ${({ theme }) => theme.shadows.glow};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  option {
+    background: ${({ theme }) => theme.colors.dark};
+    color: ${({ theme }) => theme.colors.text};
     padding: ${({ theme }) => theme.spacing.sm};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.sm};
+    padding-right: ${({ theme }) => theme.spacing.xl};
     font-size: 16px; /* Prevents zoom on iOS */
     scroll-margin: 120px;
   }
@@ -536,6 +583,200 @@ export const PopupButton = styled(motion.button)`
     padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
     font-size: ${({ theme }) => theme.fontSize.sm};
   }
+`;
+
+// University Picker Modal Components
+export const PickerOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    align-items: center;
+  }
+`;
+
+export const PickerModal = styled(motion.div)`
+  background: linear-gradient(
+    135deg,
+    rgba(37, 37, 51, 0.98) 0%,
+    rgba(26, 26, 36, 0.98) 100%
+  );
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: ${({ theme }) => theme.borderRadius.xxl};
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    border-radius: ${({ theme }) => theme.borderRadius.xxl} ${({ theme }) => theme.borderRadius.xxl} 0 0;
+    max-height: 70vh;
+  }
+`;
+
+export const PickerHeader = styled.div`
+  padding: ${({ theme }) => theme.spacing.xl};
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+`;
+
+export const PickerTitle = styled.h3`
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  color: ${({ theme }) => theme.colors.text};
+  margin: 0;
+`;
+
+export const PickerCloseButton = styled.button`
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all ${({ theme }) => theme.transitions.normal};
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.text};
+    transform: scale(1.1);
+  }
+`;
+
+export const PickerList = styled.div`
+  overflow-y: auto;
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.md};
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.primary};
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.accent};
+  }
+`;
+
+export const PickerOption = styled(motion.button)<{ $selected?: boolean }>`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.lg};
+  background: ${({ $selected }) =>
+    $selected ? 'rgba(255, 68, 88, 0.15)' : 'transparent'};
+  border: 1px solid ${({ $selected }) =>
+    $selected ? '#FF4458' : 'rgba(255, 255, 255, 0.1)'};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  color: ${({ theme }) => theme.colors.text};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  cursor: pointer;
+  transition: all ${({ theme }) => theme.transitions.normal};
+  text-align: left;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  &:hover {
+    background: rgba(255, 68, 88, 0.1);
+    border-color: #FF4458;
+    transform: translateX(4px);
+  }
+
+  &:active {
+    transform: translateX(2px);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
+`;
+
+export const PickerCheckmark = styled.span`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const InputButton = styled.button<{ $hasError?: boolean }>`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  padding: ${({ theme }) => theme.spacing.md};
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid
+    ${({ $hasError, theme }) =>
+      $hasError ? theme.colors.primary : theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  transition: all ${({ theme }) => theme.transitions.normal};
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &:focus {
+    outline: none;
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 4px rgba(255, 68, 88, 0.1),
+      ${({ theme }) => theme.shadows.glow};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: calc(${({ theme }) => theme.spacing.sm} + 4px);
+    font-size: 16px;
+    scroll-margin: 120px;
+  }
+`;
+
+export const InputButtonText = styled.span<{ $placeholder?: boolean }>`
+  color: ${({ $placeholder, theme }) =>
+    $placeholder ? theme.colors.textTertiary : theme.colors.text};
+`;
+
+export const InputButtonIcon = styled.span`
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: 12px;
 `;
 
 // Toggle Switch Components
