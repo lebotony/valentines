@@ -18,14 +18,15 @@ service cloud.firestore {
     // valentines collection
     match /valentines/{document} {
       // Allow anyone to create new valentine entries
-      // Email is optional
+      // Email and university are optional
       allow create: if request.resource.data.keys().hasAll(['name', 'phone', 'countryCode'])
                     && request.resource.data.name is string
                     && request.resource.data.phone is string
                     && request.resource.data.countryCode is string
                     && (!request.resource.data.keys().hasAny(['email']) || request.resource.data.email is string)
+                    && (!request.resource.data.keys().hasAny(['university']) || request.resource.data.university is string)
                     && request.resource.data.size() >= 3
-                    && request.resource.data.size() <= 4;
+                    && request.resource.data.size() <= 5;
 
       // No public read access
       allow read: if false;
@@ -43,6 +44,27 @@ service cloud.firestore {
       allow create: if request.resource.data.keys().hasAll(['code', 'name', 'count'])
                     && request.resource.data.code is string
                     && request.resource.data.name is string
+                    && request.resource.data.count is number
+                    && request.resource.data.count == 1;
+
+      // Allow updating existing entries (incrementing count)
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['count'])
+                    && request.resource.data.count == resource.data.count + 1;
+
+      // No deletes from public
+      allow delete: if false;
+    }
+
+    // university_cache collection - aggregated university data
+    match /university_cache/{document} {
+      // Allow public read access to university chart data
+      allow read: if true;
+
+      // Allow creating new university entries
+      allow create: if request.resource.data.keys().hasAll(['key', 'shortName', 'fullName', 'count'])
+                    && request.resource.data.key is string
+                    && request.resource.data.shortName is string
+                    && request.resource.data.fullName is string
                     && request.resource.data.count is number
                     && request.resource.data.count == 1;
 
