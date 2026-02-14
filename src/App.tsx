@@ -1,5 +1,6 @@
 import { ThemeProvider } from 'styled-components';
 import { Helmet } from 'react-helmet';
+import { Analytics } from '@vercel/analytics/react';
 import { theme } from './styles/theme';
 import { GlobalStyles } from './styles/GlobalStyles';
 import { ValentinePage } from './components/Valentine';
@@ -17,6 +18,7 @@ function App() {
       </Helmet>
       <GlobalStyles />
       <ValentinePage />
+      <Analytics />
     </ThemeProvider>
   );
 }
